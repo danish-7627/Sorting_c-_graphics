@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1558352535 source:c:\users\r!der\desktop\new folder\stl_class\main.cpp
+	<bits/stdc++.h>
+	<iostream>
+	<vector>
+	<cstdlib>
+	<time.h>
+	<graphics.h>
+	<windows.h>
+

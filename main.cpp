@@ -1,324 +1,245 @@
-#include <graphics.h>
-#include <iostream>
+#include<bits/stdc++.h>
+#include<iostream>
+#include<vector>
+#include<cstdlib>
+#include<time.h>
+#include<graphics.h>
+#include<windows.h>
+
 
 using namespace std;
 
-#define BARWIDTH 2
-#define BARMINHEIGHT 100
+// Class containing of all the sorting algorithms and the array
+class sorting_algo
+{
+	private:
+		vector<int>arr;							// Array is private
+	public:
+		sorting_algo();								// Constructor declaration
 
-class Graphic {
-public:
-    int h, left, right, bottom, top, n = 600;
-    Graphic() {
-        int gd = DETECT, gm;
-        initgraph( & gd, & gm, NULL);
-    }
+		void output();
+		void swap(int a,int b);			// Display functions
+		void print_sol(int a,int b);
 
-    void pre_iter(int i, int * a) {
-        int h;
-        cleardevice();
-        setcolor(WHITE);
-        h = i * 2;
-        bar(left = h, top = BARMINHEIGHT + a[i], right = h + BARWIDTH, bottom = 600);
-    }
-
-    void post_iter(int * a) {
-        int h;
-        setcolor(RED);
-        for (int i = 1; i <= n; i++) {
-          h = i * 2;
-          bar(left = h, top = BARMINHEIGHT + a[i], right = h + 2, bottom = 600);
-      }
-  }
-
+		int arrsize();							// Sorting functions and their subparts
+		void bubblesort();
+		void insertionsort();
+		void selectionsort();
+		void merge(int l, int m, int r);
+		void mergesort(int l,int r);
+		int partition(int low,int high);
+		void quicksort(int low,int high);
 };
 
-class Sorting_Alogrithms: public Graphic {
-  public: int i,j,n = 600,temp,min,l,loc;
-  int a[600];
-
-  void generate_random_numbers() {
-    for (int i = 0; i < n; i++) {
-      a[i] = rand() % 500+5;
-  }
-}
-void selection_sort() {
-    generate_random_numbers();
-    //Selection Sort
-    for (i = 0; i < n - 1; i++) {
-      min = a[i];
-      loc = i;
-      pre_iter(i, a);
-      for (j = i + 1; j < n; j++) {
-        if (min > a[j]) {
-          min = a[j];
-          loc = j;
-      }
-  }
-
-  temp = a[i];
-  a[i] = a[loc];
-  a[loc] = temp;
-  post_iter(a);
-}
-}
-void insertion_sort() {
-    generate_random_numbers();
-    for (i = 1; i <= n - 1; i++) {
-        pre_iter(i, a);
-        temp = a[i];
-        j = i - 1;
-
-        while ((temp < a[j]) && (j >= 0)) {
-            a[j + 1] = a[j];
-            j = j - 1;
-        }
-
-        a[j + 1] = temp;
-        post_iter(a);
-    }
-}
-void quick_sort(){
-    generate_random_numbers();
-    quick_sort(a,0,n-1);
-}
-
-void quick_sort(int a[],int l,int u)
+int main()
 {
-    int j;
-    if(l<u)
-    {
-        pre_iter(u,a);
-        j=partition(a,l,u);
-        post_iter(a);
-        quick_sort(a,l,j-1);
-        pre_iter(u,a);
-        post_iter(a);
-        quick_sort(a,j+1,u);
-        pre_iter(u,a);
-        post_iter(a);
-    }
+    // Load the graphics driver
+
+	DWORD screenWidth = GetSystemMetrics(SM_CXSCREEN);
+	DWORD screenHeight = GetSystemMetrics(SM_CYSCREEN);
+	initwindow(screenWidth,screenHeight,"",true);
+
+	sorting_algo s,s1,s2,s3,s4;
+	outtextxy(0,0,"SELECTION SORT");
+	s.output();
+	s.selectionsort();
+	setfillstyle(SOLID_FILL,GREEN);
+	s.output();
+	outtextxy(0,0,"INSERTION SORT");
+	s1.output();
+	s1.insertionsort();
+	setfillstyle(SOLID_FILL,GREEN);
+	s1.output();
+	outtextxy(0,0,"QUICK SORT");
+	s2.output();
+	s2.quicksort(0,s.arrsize());
+	setfillstyle(SOLID_FILL,GREEN);
+	s2.output();
+	outtextxy(0,0,"MERGE SORT");
+    s3.output();
+	s3.mergesort(0,s.arrsize());
+
+	setfillstyle(SOLID_FILL,GREEN);
+	s3.output();
+	outtextxy(0,0,"BUBBLE SORT");
+	s4.output();
+	s4.bubblesort();
+	setfillstyle(SOLID_FILL,GREEN);
+	s4.output();
+	getch();
+	//delay(3000);
+	closegraph();
 }
 
-int partition(int a[],int l,int u)
+// Constructor for the class to initialize the array
+sorting_algo::sorting_algo(){
+	srand(time(0));
+	for(int i = 0;i<250;i++)
+	{
+		arr.push_back(rand()%850+1);
+	}
+}
+
+// Function to return the array size
+int sorting_algo::arrsize(){
+	return arr.size();
+}
+
+// Function to display the whole array with solid bars
+void sorting_algo::output(){
+	for(int i = 0;i<arr.size();i++)
+	{
+		//line(2*i,851,2*i+1,851-arr[i]);
+		bar(4*i,851,4*i+3,851-arr[i]);
+	}
+}
+void sorting_algo::print_sol(int a,int b){
+	setfillstyle(SOLID_FILL,BLACK);
+	bar(4*a,851,4*a+3,0);
+	bar(4*b,851,4*b+3,0);
+
+}
+
+void sorting_algo::swap(int a,int b){
+	setfillstyle(SOLID_FILL,WHITE);
+	bar(4*a,851,4*a+3,851-arr[a]);
+	bar(4*(b),851,4*(b)+3,851-arr[b]);
+	delay(1);
+}
+
+
+// Bubble sort algorithm
+void sorting_algo::bubblesort(){
+	for(int i = 0;i<arr.size();i++)
+	{
+		for(int j = 0;j<arr.size()-i-1;j++)
+		{
+			if(arr[j]>arr[j+1])
+			{
+				setfillstyle(SOLID_FILL,BLACK);
+				bar(4*j,851,4*j+3,0);
+				bar(4*(j+1),851,4*(j+1)+3,0);
+				swap(arr[j],arr[j+1]);
+				swap(j,j+1);
+			}
+
+		}
+	}
+}
+
+// Selection sort algorithm
+void sorting_algo::selectionsort()
 {
-    int v,i,j,temp;
-    v=a[l];
-    i=l;
-    j=u+1;
-    do
+	for(int i = 0;i<arr.size();i++)
+	{
+		for(int j = i+1;j<arr.size();j++)
+		{
+			if(arr[i]>arr[j])
+			{
+				print_sol(i,j);
+				swap(arr[i],arr[j]);
+				swap(i,j);
+			}
+		}
+	}
+}
+
+// Insertion Sort Algorithm
+void sorting_algo::insertionsort()
+{
+	for(int i = 1;i<arr.size();i++)
+	{
+		for(int j = 0;j<i;j++)
+		{
+			if(arr[i]<arr[j])
+			{
+				print_sol(i,j);
+				swap(arr[i],arr[j]);
+				swap(i,j);
+			}
+		}
+	}
+}
+
+// Partition member function for quick sort with last element as pivot
+int sorting_algo::partition(int low,int high)
+{
+	int i = low,j=low-1;
+	while(i<high){
+		{
+			if(arr[i]<=arr[high])
+			{
+				j++;
+				print_sol(i,j);
+				swap(arr[i],arr[j]);
+				swap(i,j);
+			}
+			i++;
+		}
+	}
+	print_sol(j+1,high);
+	swap(arr[j+1],arr[high]);
+	swap(j+1,high);
+	return j+1;
+}
+// Quick sort algorithm
+void sorting_algo::quicksort(int low,int high)
+{
+	if(low<high){
+		int i = partition(low,high);
+		quicksort(low,i-1);
+		quicksort(i+1,high);
+	}
+}
+
+
+// Merge sort algorithm
+void sorting_algo::merge(int l, int m, int r){
+	int i = l;
+    int j = m+1;
+    int k = 0;
+    vector<int>a;                 // Array to store the elements temporarily while merging
+    while(i<=m&&j<=r)
     {
-        do
-        i++;
-        while(a[i]<v&&i<=u);
-
-        do
-        j--;
-        while(v<a[j]);
-
-        if(i<j)
+        if(arr[i]<arr[j])
         {
-            temp=a[i];
-            a[i]=a[j];
-            a[j]=temp;
+        	a.push_back(arr[i]);
+            i++;k++;
         }
-    }while(i<j);
-
-    a[l]=a[j];
-    a[j]=v;
-
-    return(j);
-}
-void merge_sort(){
-    generate_random_numbers();
-    mergesort(a,0,n-1);
-}
-
-void mergesort(int a[],int i,int j)
-{
-    int mid;
-    if(i<j)
-    {
-        pre_iter(i,a);
-        post_iter(a);
-        mid=(i+j)/2;
-        mergesort(a,i,mid);
-        pre_iter(i,a);
-        post_iter(a);
-        mergesort(a,mid+1,j);
-        pre_iter(j,a);
-        post_iter(a);
-        merge(a,i,mid,mid+1,j);
-    }
-}
-
-void merge(int a[],int i1,int j1,int i2,int j2)
-{
-    int temp[499];
-    int i,j,k;
-    i=i1;
-    j=i2;
-    k=0;
-
-    while(i<=j1 && j<=j2)
-    {
-        if(a[i]<a[j])
-            temp[k++]=a[i++];
-        else
-            temp[k++]=a[j++];
-    }
-
-    while(i<=j1)
-        temp[k++]=a[i++];
-
-    while(j<=j2)
-        temp[k++]=a[j++];
-
-
-    for(i=i1,j=0;i<=j2;i++,j++)
-        a[i]=temp[j];
-}
-void radix_sort(){
-    generate_random_numbers();
-    RadixSort(a,n);
-}
-
-int largest(int a[], int n)
-{
-    int large = a[0], i;
-    for(i = 1; i < n; i++)
-    {
-        if(large < a[i])
-            large = a[i];
-    }
-    return large;
-}
-
-void heapify(int a[], int n, int i)
-{
-    int largest = i;
-    int l = 2 * i + 1;
-    int r = 2 * i + 2;
-
-
-    if (l < n && a[l] > a[largest])
-        largest = l;
-    if (r < n && a[r] > a[largest])
-        largest = r;
-    if (largest != i) {
-        swap(a[i], a[largest]);
-        heapify(a, n, largest);
-    }
-}
-void heapSort(int a[], int n)
-{
-    for (int i = n / 2 - 1; i >= 0; i--) {
-        pre_iter(i,a);
-        heapify(a, n, i);
-        post_iter(a);
-    }
-    for (int i = n - 1; i >= 0; i--) {
-        pre_iter(i,a);
-        swap(a[0], a[i]);
-        heapify(a, i, 0);
-        post_iter(a);
-    }
-}
-
-void heap_sort(){
-    generate_random_numbers();
-    heapSort(a, n);
-}
-void RadixSort(int a[], int n)
-{
-    int bucket[n][n], bucket_count[n];
-    int i=0, j, k, remainder, NOP=0, divisor=1, large, pass;
-    pre_iter(i,a);
-    large = largest(a, n);
-    while(large > 0)
-    {
-        NOP++;
-        large/=10;
-    }
-
-    for(pass = 0; pass < NOP; pass++)
-    {
-
-        for(i = 0; i < 500; i++)
-        {
-
-            bucket_count[i] = 0;
-
-        }
-        for(i = 0; i < n; i++)
-        {
-            remainder = (a[i] / divisor) % 10;
-            bucket[remainder][bucket_count[remainder]] = a[i];
-            bucket_count[remainder] += 1;
+        else{
+            a.push_back(arr[j]);
+            j++;k++;
         }
 
-        i = 0;
-        for(k = 0; k < 10; k++)
-        {
-
-            for(j = 0; j < bucket_count[k]; j++)
-            {
-                pre_iter(j,a);
-                a[i] = bucket[k][j];
-                i++;
-                post_iter(a);
-            }
-        }
-        divisor *= 10;
-
     }
+    while(i<=m)
+    {
+        a.push_back(arr[i]);
+        i++;k++;
+    }
+    while(j<=r)
+    {
+        a.push_back(arr[j]);
+        j++;k++;
+    }
+    k = 0;
+    for(int i = l;i<=r;i++)
+    {
+        arr[i]=a[k];
+        k++;
+    }
+    delay(3);
+    cleardevice();
+	output();
 }
-void bubble_sort() {
-    generate_random_numbers();
-    for (i = 1; i < n; ++i) {
-        pre_iter(i, a);
-        for (j = 0; j < (n - i); ++j) {
-            if (a[j] > a[j + 1]) {
-              temp = a[j];
-              a[j] = a[j + 1];
-              a[j + 1] = temp;
-          }
-      }
-      post_iter(a);
-  }
-}
-};
+
+void sorting_algo::mergesort(int l,int r){
+	if (l < r)   {
+        int m = l+(r-l)/2;
+        mergesort(l, m);     // Dividing the array in two halves and calling mergesort on the two arrays
+		mergesort( m+1, r);
+        merge(l, m, r);      // This function is used to merge the two sorted halves
 
 
-int main() {
-  Graphic g;
-  Sorting_Alogrithms al;
-
-  outtextxy(0, 0, "Selection Sort");
-  delay(1000);
-  al.selection_sort();
-  outtextxy(0, 0, "Insertion Sort");
-  delay(1000);
-  al.insertion_sort();
-  outtextxy(0, 0, "Quick Sort");
-  delay(1000);
-  al.quick_sort();
-  outtextxy(0, 0, "Merge Sort");
-  delay(1000);
-  al.merge_sort();
-  outtextxy(0, 0, "Heap Sort");
-  delay(1000);
-  al.heap_sort();
-  outtextxy(0, 0, "Radix(LSD) Sort");
-  delay(1000);
-  al.radix_sort();
-  outtextxy(0, 0, "Bubble Sort");
-  delay(1000);
-  al.bubble_sort();
-
-  getch();
-
-  closegraph();
-
-  return 0;
+	}
 }
